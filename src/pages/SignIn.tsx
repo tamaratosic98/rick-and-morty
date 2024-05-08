@@ -1,9 +1,22 @@
 import { Card, Flex, Typography } from "antd";
+import { useEffect } from "react";
+import { useCookies } from "react-cookie";
+import { useLocation } from "react-router-dom";
 import { SignInForm } from "../components/SignInForm";
+import { AUTH_COOKIE_KEY } from "../utils/constants";
 
 const { Text } = Typography;
 
 const SignIn = () => {
+  let { state } = useLocation();
+  const [, , removeCookie] = useCookies([AUTH_COOKIE_KEY]);
+
+  useEffect(() => {
+    if (state?.signOut) {
+      removeCookie(AUTH_COOKIE_KEY);
+    }
+  });
+
   return (
     <Flex justify="center" align="center" className="h-screen bg-slate-200">
       <Card>

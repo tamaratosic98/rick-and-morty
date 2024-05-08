@@ -1,0 +1,38 @@
+.mobile-menu {
+  display: none;
+}
+
+.logo-text {
+  display: block;
+}
+
+@media (max-width: 648px) {
+  .mobile-menu {
+    display: block;
+  }
+
+  .logo-text {
+    display: none;
+  }
+
+  .menu-options {
+    padding-top: 10px;
+    display: flex;
+    background-color: #94a3b8;
+    width: 100%;
+    height: 350px;
+    position: absolute;
+    top: 80px;
+    left: -100%;
+    opacity: 0;
+    transition: all 0.5s ease;
+    flex-direction: column;
+  }
+
+  .menu-options.active {
+    left: 0;
+    opacity: 1;
+    transition: all 0.5s ease;
+    z-index: 1;
+  }
+}

@@ -6,13 +6,14 @@ const App = () => {
   return (
     <Routes>
       <Route
-        path="/home"
+        path="/"
         element={
           <RouteGuard>
             <Home />
           </RouteGuard>
         }
       />
+
       <Route path="/sign-in" element={<SignIn />} />
     </Routes>
   );

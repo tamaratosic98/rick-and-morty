@@ -12,12 +12,8 @@ import { addMinutes } from "date-fns";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import { User } from "../models/user";
 import { AUTH_COOKIE_DURATION, AUTH_COOKIE_KEY } from "../utils/constants";
-type FieldType = {
-  username?: string;
-  password?: string;
-  remember?: string;
-};
 
 const DUMMY_USERS = [
   { username: "admin", password: "admin", auth_token: "admin" },
@@ -31,10 +27,7 @@ export const SignInForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [, setCookie] = useCookies([AUTH_COOKIE_KEY]);
 
-  const onFinish: FormProps<FieldType>["onFinish"] = ({
-    username,
-    password,
-  }) => {
+  const onFinish: FormProps<User>["onFinish"] = ({ username, password }) => {
     if (!username || !password) {
       return;
     }
@@ -50,7 +43,7 @@ export const SignInForm = () => {
       setCookie(AUTH_COOKIE_KEY, user.auth_token, {
         expires: addMinutes(Date.now(), AUTH_COOKIE_DURATION),
       });
-      navigate({ pathname: "/home" });
+      navigate({ pathname: "/" });
     } else {
       setErrorMessage("Incorect username or password");
     }
@@ -85,7 +78,7 @@ export const SignInForm = () => {
         autoComplete="off"
         size="large"
       >
-        <Form.Item<FieldType>
+        <Form.Item<User>
           name="username"
           rules={[{ required: true, message: "Please input your username!" }]}
         >
@@ -96,7 +89,7 @@ export const SignInForm = () => {
           />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        <Form.Item<User>
           name="password"
           rules={[{ required: true, message: "Please input your password!" }]}
         >
@@ -109,7 +102,7 @@ export const SignInForm = () => {
         </Form.Item>
 
         {/*TODO: Handle remember me feature*/}
-        <Form.Item<FieldType>
+        <Form.Item
           name="remember"
           valuePropName="checked"
           wrapperCol={{ offset: 8, span: 16 }}
