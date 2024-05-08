@@ -8,7 +8,7 @@ export const CharactersContainer = () => {
   const { data: characters, isLoading } = useCharacters({ filters });
 
   const setFiltersHandler = (filter: Partial<Character>) => {
-    setFilters({ ...filters, filter });
+    setFilters({ ...filters, ...filter });
   };
 
   return (

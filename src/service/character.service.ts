@@ -11,7 +11,9 @@ export const CharacterService = {
   }: {
     filters?: Partial<Character>;
   }): Promise<Character[]> {
-    const response = await characterApi.get("/character", { params: filters });
+    const response = await characterApi.get("/character", {
+      params: { ...filters },
+    });
     return response.data?.results || [];
   },
   async getFavoriteCharacters({
@@ -25,7 +27,7 @@ export const CharacterService = {
     }
 
     const response = await characterApi.get(`/character/${ids?.join(",")}`, {
-      params: filters,
+      params: { ...filters },
     });
 
     return Array.isArray(response.data) ? response.data : [response.data];

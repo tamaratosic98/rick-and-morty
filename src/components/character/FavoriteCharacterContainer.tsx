@@ -9,7 +9,7 @@ export const FavoriteCharactersContainer = () => {
   const { data: characters, isLoading } = useFavoriteCharacters({ filters });
 
   const setFiltersHandler = (filter: Partial<Character>) => {
-    setFilters({ ...filters, filter });
+    setFilters({ ...filters, ...filter });
   };
 
   return (

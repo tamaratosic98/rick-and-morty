@@ -6,6 +6,7 @@ import { characterKeys } from "../utils/keys";
 export function useCharacters({ filters }: { filters?: Partial<Character> }) {
   return useQuery({
     ...characterKeys.list({ filters }),
+    queryFn: () => CharacterService.getCharacters({ filters }),
     retry: false,
   });
 }
