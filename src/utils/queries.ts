@@ -55,7 +55,6 @@ export function useOptimisticUpdateCharacter() {
         ? characterKeys.favoritesList({ filters }).queryKey
         : characterKeys.list({ filters }).queryKey;
 
-      console.log(keys, window.location.href.includes("favorites"));
       await queryClient.cancelQueries({ queryKey: keys });
 
       const previousCharacters: Character[] =

@@ -4,11 +4,13 @@ import {
   HeartFilled,
   HeartOutlined,
 } from "@ant-design/icons";
+import { useQueryClient } from "@tanstack/react-query";
 import { Card, Flex, Image, List } from "antd";
 import Meta from "antd/es/card/Meta";
 import { useState } from "react";
 import { useFavorites } from "../../hooks/useFavorites";
 import { Character, Gender, Status } from "../../models/character";
+import { characterKeys } from "../../utils/keys";
 import { useOptimisticUpdateCharacter } from "../../utils/queries";
 import { Filter } from "../../utils/types";
 import FilterToolbar from "../common/filters/FilterToolbar";
@@ -114,12 +116,21 @@ export const CharacterList = ({
     addFavorite(character.id.toString());
   };
 
+  const queryClient = useQueryClient();
+
   const removeFromFavorites = (character: Character) => {
     updateCharacter({
       newCharacter: { ...character, favorite: false },
       filters,
     });
+
     removeFavorite(character.id.toString());
+
+    setTimeout(() => {
+      queryClient.invalidateQueries({
+        queryKey: characterKeys.favoritesList({ filters }).queryKey,
+      });
+    });
   };
 
   const getGridColumns = (num: number) => {
