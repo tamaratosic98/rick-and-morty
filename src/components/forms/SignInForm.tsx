@@ -12,8 +12,8 @@ import { addMinutes } from "date-fns";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import { User } from "../models/user";
-import { AUTH_COOKIE_DURATION, AUTH_COOKIE_KEY } from "../utils/constants";
+import { User } from "../../models/user";
+import { AUTH_COOKIE_DURATION, AUTH_COOKIE_KEY } from "../../utils/constants";
 
 const DUMMY_USERS = [
   { username: "admin", password: "admin", auth_token: "admin" },

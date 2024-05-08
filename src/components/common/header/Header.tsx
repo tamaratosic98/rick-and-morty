@@ -54,7 +54,10 @@ export const Header = () => {
                 className="uppercase"
                 onClick={closeSideMenuHandler}
               >
-                <Link className="hover:text-white" to={route.to}>
+                <Link
+                  className="hover:text-white font-semibold text-slate-600"
+                  to={route.to}
+                >
                   {route.title}
                 </Link>
               </Flex>

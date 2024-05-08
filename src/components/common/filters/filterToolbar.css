@@ -1,0 +1,17 @@
+.filter-toolbar {
+  display: flex;
+}
+
+.mobile-filter-button {
+  display: none;
+}
+
+@media (max-width: 648px) {
+  .mobile-filter-button {
+    display: block;
+  }
+
+  .filter-toolbar {
+    display: none;
+  }
+}

@@ -2,7 +2,7 @@ import { Card, Flex, Typography } from "antd";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useLocation } from "react-router-dom";
-import { SignInForm } from "../components/SignInForm";
+import { SignInForm } from "../components/forms/SignInForm";
 import { AUTH_COOKIE_KEY } from "../utils/constants";
 
 const { Text } = Typography;
