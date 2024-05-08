@@ -31,6 +31,7 @@ const FilterToolbar = (props: FilterToolbarProps) => {
         return (
           <Input
             type="text"
+            key={filter.field}
             placeholder={filter.placeholder || "Search..."}
             onChange={filter.onChange}
             onPressEnter={filter.onChange}
@@ -45,6 +46,7 @@ const FilterToolbar = (props: FilterToolbarProps) => {
       case "select":
         return (
           <Select
+            key={filter.field}
             mode="multiple"
             placeholder={filter.placeholder || "Select..."}
             onChange={filter.onChange}

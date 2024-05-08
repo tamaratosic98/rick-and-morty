@@ -4,12 +4,12 @@ export type Gender = "Female" | "Male" | "Gderless" | "unknown";
 
 export type Origin = {
   name: string;
-  link: string;
+  url: string;
 };
 
 export type Location = {
   name: string;
-  link: string;
+  url: string;
 };
 
 export interface Character {

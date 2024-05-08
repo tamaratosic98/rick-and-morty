@@ -49,6 +49,7 @@ export const Header = () => {
           {routes.map((route) => {
             return (
               <Flex
+                key={route.to}
                 align="center"
                 justify="center"
                 className="uppercase"
