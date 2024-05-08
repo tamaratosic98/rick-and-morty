@@ -8,17 +8,23 @@ import { Card, Flex, Image, List } from "antd";
 import Meta from "antd/es/card/Meta";
 import { useState } from "react";
 import { useFavorites } from "../../hooks/useFavorites";
-import { Character } from "../../models/character";
-import {
-  useCharacters,
-  useOptimisticUpdateCharacter,
-} from "../../utils/queries";
+import { Character, Gender, Status } from "../../models/character";
+import { useOptimisticUpdateCharacter } from "../../utils/queries";
 import { Filter } from "../../utils/types";
 import FilterToolbar from "../common/filters/FilterToolbar";
 import { CharacterModal } from "../modals/CharacterModal";
 
-export const CharacterList = () => {
-  const { data: characters, isLoading } = useCharacters();
+export const CharacterList = ({
+  characters,
+  isLoading,
+  setFilters,
+  filters,
+}: {
+  characters: Character[];
+  isLoading: boolean;
+  filters: Partial<Character>;
+  setFilters: (filters: Partial<Character>) => void;
+}) => {
   const { mutate: updateCharacter } = useOptimisticUpdateCharacter();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
 
@@ -28,17 +34,18 @@ export const CharacterList = () => {
         characterId: string;
         setIsModalOpen: (value: boolean) => void;
         mode?: "view" | "edit";
+        filters: Partial<Character>;
       }
     | undefined
   >(undefined);
 
-  const filters: Filter[] = [
+  const filterItems: Filter[] = [
     {
       field: "name",
       label: "Name",
       type: "text",
       placeholder: "Enter name...",
-      onChange: () => console.log("Name filter"),
+      onChange: (value) => setFilters?.({ name: value }),
     },
     {
       field: "species",
@@ -50,7 +57,7 @@ export const CharacterList = () => {
         { label: "Alien", value: "alien" },
         { label: "unknown", value: "unknown" },
       ],
-      onChange: () => console.log("Species filter"),
+      onChange: (value) => setFilters?.({ species: value }),
     },
     {
       field: "status",
@@ -62,7 +69,7 @@ export const CharacterList = () => {
         { label: "Dead", value: "dead" },
         { label: "unknown", value: "unknown" },
       ],
-      onChange: () => console.log("Status filter"),
+      onChange: (value) => setFilters?.({ status: value as Status }),
     },
     {
       field: "gender",
@@ -75,7 +82,7 @@ export const CharacterList = () => {
         { label: "Genderless", value: "genderless" },
         { label: "unknown", value: "unknown" },
       ],
-      onChange: () => console.log("Status filter"),
+      onChange: (value) => setFilters?.({ gender: value as Gender }),
     },
   ];
 
@@ -85,6 +92,7 @@ export const CharacterList = () => {
       characterId: character.id.toString(),
       setIsModalOpen: () => setModalData(undefined),
       mode: "view",
+      filters,
     });
   };
 
@@ -94,35 +102,50 @@ export const CharacterList = () => {
       characterId: character.id.toString(),
       setIsModalOpen: () => setModalData(undefined),
       mode: "edit",
+      filters,
     });
   };
 
   const addToFavorites = (character: Character) => {
-    updateCharacter({ ...character, favorite: true });
+    updateCharacter({
+      newCharacter: { ...character, favorite: true },
+      filters,
+    });
     addFavorite(character.id.toString());
   };
 
   const removeFromFavorites = (character: Character) => {
-    updateCharacter({ ...character, favorite: false });
+    updateCharacter({
+      newCharacter: { ...character, favorite: false },
+      filters,
+    });
     removeFavorite(character.id.toString());
+  };
+
+  const getGridColumns = (num: number) => {
+    return Math.min(characters.length, num);
+  };
+
+  const calculateGridColumns = () => {
+    return {
+      gutter: 20,
+      xs: getGridColumns(2),
+      sm: getGridColumns(3),
+      md: getGridColumns(4),
+      lg: getGridColumns(4),
+      xl: getGridColumns(6),
+      xxl: getGridColumns(6),
+    };
   };
 
   return (
     <>
       <Flex vertical gap="large">
-        <FilterToolbar filters={filters} includeSearch />
-        <Flex align="center" justify="center">
+        <FilterToolbar filters={filterItems} includeSearch />
+        <Flex justify={characters.length ? "start" : "center"}>
           <List
             className="character-list p-3"
-            grid={{
-              gutter: 20,
-              xs: 2,
-              sm: 3,
-              md: 4,
-              lg: 4,
-              xl: 6,
-              xxl: 8,
-            }}
+            grid={calculateGridColumns()}
             loading={isLoading}
             itemLayout="horizontal"
             dataSource={characters}

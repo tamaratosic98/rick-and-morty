@@ -27,7 +27,7 @@ export const Header = () => {
       align="center"
     >
       <Flex align="center" justify="space-between" className="flex-1">
-        <Link to="#">
+        <Link to="/">
           <Flex gap="small" justify="center" align="center">
             <Image
               src="https://www.pngall.com/wp-content/uploads/4/Rick-And-Morty.png"

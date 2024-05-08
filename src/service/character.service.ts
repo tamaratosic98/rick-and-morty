@@ -6,9 +6,29 @@ const characterApi = axios.create({
 });
 
 export const CharacterService = {
-  async getCharacters(): Promise<Character[]> {
-    const response = await characterApi.get("/character");
+  async getCharacters({
+    filters,
+  }: {
+    filters?: Partial<Character>;
+  }): Promise<Character[]> {
+    const response = await characterApi.get("/character", { params: filters });
     return response.data?.results || [];
+  },
+  async getFavoriteCharacters({
+    ids,
+    filters,
+  }: { ids?: string[]; filters?: Partial<Character> } = {}): Promise<
+    Character[]
+  > {
+    if (!ids?.length) {
+      return [];
+    }
+
+    const response = await characterApi.get(`/character/${ids?.join(",")}`, {
+      params: filters,
+    });
+
+    return Array.isArray(response.data) ? response.data : [response.data];
   },
   async getCharacter({
     characterId,

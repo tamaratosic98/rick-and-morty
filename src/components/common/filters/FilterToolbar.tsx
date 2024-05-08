@@ -1,7 +1,8 @@
 import { FilterOutlined } from "@ant-design/icons";
-import { Button, Drawer, Flex, FloatButton, Input, Select } from "antd";
+import { Button, Drawer, Flex, FloatButton, Input } from "antd";
 import { useState } from "react";
-import { Filter, FilterToolbarProps } from "../../../utils/types";
+import { FilterToolbarProps } from "../../../utils/types";
+import FilterItem from "./FilterItem";
 import "./filterToolbar.css";
 
 const { Search } = Input;
@@ -19,51 +20,6 @@ const FilterToolbar = (props: FilterToolbarProps) => {
     setOpen(true);
   };
 
-  const renderFilterItem = ({
-    filter,
-    isMobile,
-  }: {
-    filter: Filter;
-    isMobile?: boolean;
-  }) => {
-    switch (filter.type) {
-      case "text":
-        return (
-          <Input
-            type="text"
-            key={filter.field}
-            placeholder={filter.placeholder || "Search..."}
-            onChange={filter.onChange}
-            onPressEnter={filter.onChange}
-            style={
-              isMobile
-                ? { width: "100%" }
-                : { maxWidth: "300px", minWidth: "200px" }
-            }
-            size="large"
-          />
-        );
-      case "select":
-        return (
-          <Select
-            key={filter.field}
-            mode="multiple"
-            placeholder={filter.placeholder || "Select..."}
-            onChange={filter.onChange}
-            options={filter.options}
-            style={
-              isMobile
-                ? { width: "100%" }
-                : { width: "300px", minWidth: "200px" }
-            }
-            size="large"
-          />
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
     <>
       <Flex align="center" className="filter-toolbar p-2" gap="large" wrap>
@@ -77,7 +33,9 @@ const FilterToolbar = (props: FilterToolbarProps) => {
             size="large"
           />
         )}
-        {filters.map((filter) => renderFilterItem({ filter }))}
+        {filters.map((filter) => (
+          <FilterItem filter={filter} key={filter.field} />
+        ))}
       </Flex>
       <FloatButton
         className="mobile-filter-button"
@@ -97,9 +55,9 @@ const FilterToolbar = (props: FilterToolbarProps) => {
               size="large"
             />
           )}
-          {filters.map((filter) =>
-            renderFilterItem({ filter, isMobile: true })
-          )}
+          {filters.map((filter) => (
+            <FilterItem filter={filter} isMobile key={filter.field} />
+          ))}
           <Button block size="large">
             Apply
           </Button>

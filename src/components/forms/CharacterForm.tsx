@@ -19,16 +19,21 @@ export const CharacterForm = ({
   characterId,
   mode,
   onSubmit,
+  filters,
 }: {
   characterId: string;
   mode: "view" | "edit";
   onSubmit: () => void;
+  filters: Partial<Character>;
 }) => {
   const { data: character, isLoading } = useCharacter({ characterId });
   const { mutate: updateCharacter } = useOptimisticUpdateCharacter();
 
   const onFinish: FormProps<Character>["onFinish"] = (values: Character) => {
-    updateCharacter({ ...values, id: parseInt(characterId) });
+    updateCharacter({
+      newCharacter: { ...values, id: parseInt(characterId) },
+      filters,
+    });
     onSubmit();
   };
 
@@ -40,26 +45,20 @@ export const CharacterForm = ({
         <Form
           name="basic"
           onFinish={onFinish}
-          layout="vertical"
+          layout="horizontal"
           autoComplete="off"
           size="large"
         >
-          <Flex justify="center">
+          <Flex justify="center" className="pb-10">
             <Image
               src={character?.image}
               preview={false}
               className="rounded-md"
+              width={150}
             />
           </Flex>
 
           <Form.Item name="name" label="Name" initialValue={character?.name}>
-            <Input disabled={isDisabled} />
-          </Form.Item>
-          <Form.Item
-            name="gender"
-            label="Gender"
-            initialValue={character?.gender}
-          >
             <Input disabled={isDisabled} />
           </Form.Item>
 
@@ -91,7 +90,7 @@ export const CharacterForm = ({
           <Form.Item
             name="gender"
             label="Gender"
-            initialValue={character?.status}
+            initialValue={character?.gender}
           >
             <Select disabled={isDisabled}>
               <Select.Option value="Female">Female</Select.Option>

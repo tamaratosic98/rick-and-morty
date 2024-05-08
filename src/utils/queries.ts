@@ -1,13 +1,30 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useFavorites } from "../hooks/useFavorites";
 import { Character } from "../models/character";
 import { CharacterService } from "../service/character.service";
-
-export function useCharacters({
-  filters,
-}: { filters?: Partial<Character> } = {}) {
+import { characterKeys } from "../utils/keys";
+export function useCharacters({ filters }: { filters?: Partial<Character> }) {
   return useQuery({
-    queryKey: ["characters"],
-    queryFn: CharacterService.getCharacters,
+    ...characterKeys.list({ filters }),
+    retry: false,
+  });
+}
+
+export function useFavoriteCharacters({
+  filters,
+}: {
+  filters?: Partial<Character>;
+}) {
+  const { favorites } = useFavorites();
+
+  return useQuery({
+    ...characterKeys.favoritesList({ filters }),
+    queryFn: () => {
+      return CharacterService.getFavoriteCharacters({
+        ids: favorites,
+        filters,
+      });
+    },
   });
 }
 
@@ -18,35 +35,32 @@ export function useCharacter({ characterId }: { characterId: string }) {
   });
 }
 
-// If it was real data we would use this approach
-// export function useUpdateCharacter({ name }: { name: string }) {
-//   const queryClient = useQueryClient();
-//   return useMutation({
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({ queryKey: ["characters"] });
-//     },
-//   });
-// }
-
 export function useOptimisticUpdateCharacter() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (newCharacter: Character) => {
-      console.log("newCharacter", newCharacter);
-    },
-    onMutate: async (newCharacter: Character) => {
-      await queryClient.cancelQueries({ queryKey: ["characters"] });
+    mutationFn: async ({}: {
+      newCharacter: Character;
+      filters: Partial<Character>;
+    }) => {},
+    onMutate: async ({
+      newCharacter,
+      filters,
+    }: {
+      newCharacter: Character;
+      filters: Partial<Character>;
+    }) => {
+      const keys = window.location.href.includes("favorites")
+        ? characterKeys.favoritesList({ filters }).queryKey
+        : characterKeys.list({ filters }).queryKey;
+
+      console.log(keys, window.location.href.includes("favorites"));
+      await queryClient.cancelQueries({ queryKey: keys });
 
       const previousCharacters: Character[] =
-        queryClient.getQueryData(["characters"]) || [];
+        queryClient.getQueryData(keys) || [];
 
-      console.log(
-        "previousCharacters",
-        queryClient.getQueryData(["characters"])
-      );
-
-      queryClient.setQueryData(["characters"], (old: Character[]) => {
+      queryClient.setQueryData(keys, (_old: Character[]) => {
         return previousCharacters.map((character) => {
           if (character.id === newCharacter.id) {
             return {

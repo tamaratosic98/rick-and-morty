@@ -9,7 +9,7 @@ export type Filter = {
   type: FilterType;
   options?: Array<FilterSelectOption>;
   placeholder?: string;
-  onChange?: () => void;
+  onChange: (value: string) => void;
 };
 
 export type FilterToolbarProps = {
