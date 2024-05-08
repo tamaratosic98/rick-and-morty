@@ -29,7 +29,11 @@ export const CharacterModal = ({
       onCancel={() => setIsModalOpen(false)}
       footer={null}
     >
-      <CharacterForm characterId={characterId} mode={mode} />
+      <CharacterForm
+        characterId={characterId}
+        mode={mode}
+        onSubmit={() => setIsModalOpen(false)}
+      />
     </Modal>
   );
 };

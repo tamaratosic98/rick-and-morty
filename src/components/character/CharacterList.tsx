@@ -1,15 +1,26 @@
-import { EditOutlined, EyeOutlined, HeartOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  EyeOutlined,
+  HeartFilled,
+  HeartOutlined,
+} from "@ant-design/icons";
 import { Card, Flex, Image, List } from "antd";
 import Meta from "antd/es/card/Meta";
 import { useState } from "react";
+import { useFavorites } from "../../hooks/useFavorites";
 import { Character } from "../../models/character";
-import { useCharacters } from "../../utils/queries";
+import {
+  useCharacters,
+  useOptimisticUpdateCharacter,
+} from "../../utils/queries";
 import { Filter } from "../../utils/types";
 import FilterToolbar from "../common/filters/FilterToolbar";
 import { CharacterModal } from "../modals/CharacterModal";
 
 export const CharacterList = () => {
   const { data: characters, isLoading } = useCharacters();
+  const { mutate: updateCharacter } = useOptimisticUpdateCharacter();
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
 
   const [modalData, setModalData] = useState<
     | {
@@ -35,8 +46,8 @@ export const CharacterList = () => {
       type: "select",
       placeholder: "Select species...",
       options: [
-        { label: "Alive", value: "alive" },
-        { label: "Dead", value: "dead" },
+        { label: "Human", value: "human" },
+        { label: "Alien", value: "alien" },
         { label: "unknown", value: "unknown" },
       ],
       onChange: () => console.log("Species filter"),
@@ -72,7 +83,7 @@ export const CharacterList = () => {
     setModalData({
       isModalOpen: true,
       characterId: character.id.toString(),
-      setIsModalOpen: (value) => setModalData(undefined),
+      setIsModalOpen: () => setModalData(undefined),
       mode: "view",
     });
   };
@@ -81,12 +92,20 @@ export const CharacterList = () => {
     setModalData({
       isModalOpen: true,
       characterId: character.id.toString(),
-      setIsModalOpen: (value) => setModalData(undefined),
+      setIsModalOpen: () => setModalData(undefined),
       mode: "edit",
     });
   };
 
-  const addToFavorites = (character: Character) => {};
+  const addToFavorites = (character: Character) => {
+    updateCharacter({ ...character, favorite: true });
+    addFavorite(character.id.toString());
+  };
+
+  const removeFromFavorites = (character: Character) => {
+    updateCharacter({ ...character, favorite: false });
+    removeFavorite(character.id.toString());
+  };
 
   return (
     <>
@@ -111,6 +130,7 @@ export const CharacterList = () => {
               <List.Item>
                 {
                   <Card
+                    onClick={() => openViewModal(item)}
                     cover={
                       <Image preview={false} alt={item.name} src={item.image} />
                     }
@@ -121,12 +141,28 @@ export const CharacterList = () => {
                       />,
                       <EditOutlined
                         key="edit"
-                        onClick={() => openEditModal(item)}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          openEditModal(item);
+                        }}
                       />,
-                      <HeartOutlined
-                        key="favorites"
-                        onClick={() => addToFavorites(item)}
-                      />,
+                      item.favorite || isFavorite(item.id.toString()) ? (
+                        <HeartFilled
+                          key="remove-from-favorites"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            removeFromFavorites(item);
+                          }}
+                        />
+                      ) : (
+                        <HeartOutlined
+                          key="add-to-favorites"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            addToFavorites(item);
+                          }}
+                        />
+                      ),
                     ]}
                     hoverable
                   >
