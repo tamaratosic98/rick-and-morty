@@ -3,10 +3,22 @@ import { Character } from "../models/character";
 
 export const characterKeys = createQueryKeys("characters", {
   detail: (characterId: string) => [characterId],
-  list: ({ filters }: { filters?: Partial<Character> }) => ({
-    queryKey: [filters],
+  list: ({
+    filters,
+    query,
+  }: {
+    filters?: Partial<Character>;
+    query?: string;
+  }) => ({
+    queryKey: [filters, query],
   }),
-  favoritesList: ({ filters }: { filters?: Partial<Character> }) => ({
-    queryKey: ["favorites", filters],
+  favoritesList: ({
+    filters,
+    query,
+  }: {
+    filters?: Partial<Character>;
+    query?: string;
+  }) => ({
+    queryKey: ["favorites", filters, query],
   }),
 });

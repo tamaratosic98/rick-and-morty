@@ -21,11 +21,13 @@ export const CharacterList = ({
   isLoading,
   setFilters,
   filters,
+  setQuery,
 }: {
   characters: Character[];
   isLoading: boolean;
   filters: Partial<Character>;
   setFilters: (filters: Partial<Character>) => void;
+  setQuery: (query: string) => void;
 }) => {
   const { mutate: updateCharacter } = useOptimisticUpdateCharacter();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
@@ -154,7 +156,7 @@ export const CharacterList = ({
       <Flex vertical gap="large">
         <FilterToolbar
           filters={filterItems}
-          // onSearch={(query) => setFilters({ name: query })}
+          onSearch={setQuery}
           includeSearch
           applyAllHandler={setFilters}
         />

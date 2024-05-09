@@ -17,10 +17,10 @@ export type Filter = {
 export interface FilterToolbarProps {
   filters: Array<Filter>;
   includeSearch?: boolean;
-  onSearch?: (query: string) => void;
+  applyAllHandler: (filters: Partial<Character>) => void;
+  onSearch: (query: string) => void;
   searchPlaceholder?: string;
   searchLoading?: boolean;
-  applyAllHandler: (filters: Partial<Character>) => void;
 }
 
 export interface FilterDrawerProps extends FilterToolbarProps {

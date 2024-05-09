@@ -33,10 +33,10 @@ const FilterToolbar = ({
           <Search
             placeholder={searchPlaceholder || "Search..."}
             onSearch={onSearch}
-            allowClear
             loading={searchLoading}
             style={{ maxWidth: "300px", minWidth: "150px" }}
             size="large"
+            allowClear
           />
         )}
         {filters.map((filter) => (

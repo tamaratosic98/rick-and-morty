@@ -16,9 +16,11 @@ export const FilterDrawer = ({
   applyAllHandler,
 }: FilterDrawerProps) => {
   const [appliedFilters, setAppliedFilters] = useState<Partial<Character>>({});
+  const [search, setSearch] = useState("");
 
   const applyFiltersHandler = () => {
     applyAllHandler(appliedFilters);
+    onSearch(search);
     onCloseDrawer();
   };
 
@@ -37,6 +39,7 @@ export const FilterDrawer = ({
             loading={searchLoading}
             style={{ width: "100%" }}
             size="large"
+            onChange={(event) => setSearch(event.target.value)}
           />
         )}
         {filters.map((filter) => (

@@ -1,30 +1,59 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import to from "await-to-js";
 import { useFavorites } from "../hooks/useFavorites";
 import { Character } from "../models/character";
 import { CharacterService } from "../service/character.service";
 import { characterKeys } from "../utils/keys";
-export function useCharacters({ filters }: { filters?: Partial<Character> }) {
+import { queryAllCharacters } from "./functions";
+
+export function useCharacters({
+  filters,
+  query,
+}: {
+  filters?: Partial<Character>;
+  query?: string;
+}) {
   return useQuery({
-    ...characterKeys.list({ filters }),
-    queryFn: () => CharacterService.getCharacters({ filters }),
+    ...characterKeys.list({ filters, query }),
+    queryFn: async () => {
+      const [error, characters] = await to(
+        CharacterService.getCharacters({ filters })
+      );
+
+      if (!error) {
+        return queryAllCharacters(characters, query);
+      }
+
+      throw error;
+    },
     retry: false,
   });
 }
 
 export function useFavoriteCharacters({
   filters,
+  query,
 }: {
   filters?: Partial<Character>;
+  query?: string;
 }) {
   const { favorites } = useFavorites();
 
   return useQuery({
-    ...characterKeys.favoritesList({ filters }),
-    queryFn: () => {
-      return CharacterService.getFavoriteCharacters({
-        ids: favorites,
-        filters,
-      });
+    ...characterKeys.favoritesList({ filters, query }),
+    queryFn: async () => {
+      const [error, characters] = await to(
+        CharacterService.getFavoriteCharacters({
+          ids: favorites,
+          filters,
+        })
+      );
+
+      if (!error) {
+        return queryAllCharacters(characters, query);
+      }
+
+      throw error;
     },
   });
 }

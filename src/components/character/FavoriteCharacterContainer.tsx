@@ -5,8 +5,12 @@ import { CharacterList } from "./CharacterList";
 
 export const FavoriteCharactersContainer = () => {
   const [filters, setFilters] = useState({});
+  const [query, setQuery] = useState("");
 
-  const { data: characters, isLoading } = useFavoriteCharacters({ filters });
+  const { data: characters, isLoading } = useFavoriteCharacters({
+    filters,
+    query,
+  });
 
   const setFiltersHandler = (filter: Partial<Character>) => {
     setFilters({ ...filters, ...filter });
@@ -18,6 +22,7 @@ export const FavoriteCharactersContainer = () => {
       isLoading={isLoading}
       filters={filters}
       setFilters={setFiltersHandler}
+      setQuery={setQuery}
     />
   );
 };

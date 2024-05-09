@@ -5,7 +5,9 @@ import { CharacterList } from "./CharacterList";
 
 export const CharactersContainer = () => {
   const [filters, setFilters] = useState({});
-  const { data: characters, isLoading } = useCharacters({ filters });
+  const [query, setQuery] = useState("");
+
+  const { data: characters, isLoading } = useCharacters({ filters, query });
 
   const setFiltersHandler = (filter: Partial<Character>) => {
     setFilters({ ...filters, ...filter });
@@ -16,6 +18,7 @@ export const CharactersContainer = () => {
       characters={characters ?? []}
       isLoading={isLoading}
       setFilters={setFiltersHandler}
+      setQuery={setQuery}
       filters={filters}
     />
   );
