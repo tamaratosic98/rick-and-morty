@@ -28,3 +28,9 @@ export interface FilterDrawerProps extends FilterToolbarProps {
   open: boolean;
   applyAllHandler: (filters: Partial<Character>) => void;
 }
+
+export type GetResponse<T> = {
+  results: T;
+  pages: number;
+  total: number;
+};

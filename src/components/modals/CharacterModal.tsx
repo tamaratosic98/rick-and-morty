@@ -9,12 +9,16 @@ export const CharacterModal = ({
   setIsModalOpen,
   mode = "view",
   filters,
+  currentPage,
+  query,
 }: {
   isModalOpen: boolean;
   characterId: string;
   setIsModalOpen: (value: boolean) => void;
   mode?: "view" | "edit";
   filters: Partial<Character>;
+  currentPage: number;
+  query: string;
 }) => {
   const title = useMemo(() => {
     if (mode === "view") {
@@ -37,6 +41,8 @@ export const CharacterModal = ({
         mode={mode}
         onSubmit={() => setIsModalOpen(false)}
         filters={filters}
+        currentPage={currentPage}
+        query={query}
       />
     </Modal>
   );

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Character } from "../models/character";
+import { GetResponse } from "../utils/types";
 
 const characterApi = axios.create({
   baseURL: "https://rickandmortyapi.com/api",
@@ -8,29 +9,41 @@ const characterApi = axios.create({
 export const CharacterService = {
   async getCharacters({
     filters,
+    page,
   }: {
     filters?: Partial<Character>;
-  }): Promise<Character[]> {
+    page?: number;
+  }): Promise<GetResponse<Character[]>> {
     const response = await characterApi.get("/character", {
-      params: { ...filters },
+      params: { ...filters, page },
     });
-    return response.data?.results || [];
+
+    return {
+      results: response.data?.results || [],
+      total: response.data?.info?.count,
+      pages: response.data?.info?.pages || 1,
+    };
   },
   async getFavoriteCharacters({
     ids,
     filters,
-  }: { ids?: string[]; filters?: Partial<Character> } = {}): Promise<
-    Character[]
-  > {
+    page,
+  }: {
+    ids?: string[];
+    filters?: Partial<Character>;
+    page?: number;
+  } = {}): Promise<GetResponse<Character[]>> {
     if (!ids?.length) {
-      return [];
+      return { results: [], total: 0, pages: 0 };
     }
 
     const response = await characterApi.get(`/character/${ids?.join(",")}`, {
-      params: { ...filters },
+      params: { ...filters, page },
     });
 
-    return Array.isArray(response.data) ? response.data : [response.data];
+    return Array.isArray(response.data)
+      ? { results: response.data, total: response.data.length, pages: 1 }
+      : { results: [response.data], total: 1, pages: 1 };
   },
   async getCharacter({
     characterId,

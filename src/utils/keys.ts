@@ -6,19 +6,23 @@ export const characterKeys = createQueryKeys("characters", {
   list: ({
     filters,
     query,
+    page,
   }: {
     filters?: Partial<Character>;
     query?: string;
+    page?: number;
   }) => ({
-    queryKey: [filters, query],
+    queryKey: [filters, query, page],
   }),
   favoritesList: ({
     filters,
     query,
+    page,
   }: {
     filters?: Partial<Character>;
     query?: string;
+    page?: number;
   }) => ({
-    queryKey: ["favorites", filters, query],
+    queryKey: ["favorites", filters, query, page],
   }),
 });

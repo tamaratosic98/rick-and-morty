@@ -6,10 +6,12 @@ import { CharacterList } from "./CharacterList";
 export const FavoriteCharactersContainer = () => {
   const [filters, setFilters] = useState({});
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
 
-  const { data: characters, isLoading } = useFavoriteCharacters({
+  const { data, isLoading } = useFavoriteCharacters({
     filters,
     query,
+    page,
   });
 
   const setFiltersHandler = (filter: Partial<Character>) => {
@@ -18,11 +20,15 @@ export const FavoriteCharactersContainer = () => {
 
   return (
     <CharacterList
-      characters={characters ?? []}
+      characters={data?.results ?? []}
       isLoading={isLoading}
       filters={filters}
       setFilters={setFiltersHandler}
       setQuery={setQuery}
+      setPage={setPage}
+      totalPages={data?.pages || 1}
+      currentPage={page}
+      query={query}
     />
   );
 };

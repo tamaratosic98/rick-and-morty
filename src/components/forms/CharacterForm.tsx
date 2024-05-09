@@ -20,11 +20,15 @@ export const CharacterForm = ({
   mode,
   onSubmit,
   filters,
+  currentPage,
+  query,
 }: {
   characterId: string;
   mode: "view" | "edit";
   onSubmit: () => void;
   filters: Partial<Character>;
+  currentPage: number;
+  query: string;
 }) => {
   const { data: character, isLoading } = useCharacter({ characterId });
   const { mutate: updateCharacter } = useOptimisticUpdateCharacter();
@@ -33,7 +37,10 @@ export const CharacterForm = ({
     updateCharacter({
       newCharacter: { ...values, id: parseInt(characterId) },
       filters,
+      page: currentPage,
+      query,
     });
+
     onSubmit();
   };
 

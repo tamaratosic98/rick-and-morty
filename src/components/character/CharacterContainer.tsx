@@ -6,8 +6,13 @@ import { CharacterList } from "./CharacterList";
 export const CharactersContainer = () => {
   const [filters, setFilters] = useState({});
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
 
-  const { data: characters, isLoading } = useCharacters({ filters, query });
+  const { data, isLoading } = useCharacters({
+    filters,
+    query,
+    page,
+  });
 
   const setFiltersHandler = (filter: Partial<Character>) => {
     setFilters({ ...filters, ...filter });
@@ -15,11 +20,15 @@ export const CharactersContainer = () => {
 
   return (
     <CharacterList
-      characters={characters ?? []}
+      characters={data?.results ?? []}
       isLoading={isLoading}
       setFilters={setFiltersHandler}
       setQuery={setQuery}
       filters={filters}
+      setPage={setPage}
+      totalPages={data?.pages || 1}
+      currentPage={page}
+      query={query}
     />
   );
 };

@@ -22,12 +22,20 @@ export const CharacterList = ({
   setFilters,
   filters,
   setQuery,
+  setPage,
+  totalPages,
+  currentPage,
+  query,
 }: {
   characters: Character[];
   isLoading: boolean;
   filters: Partial<Character>;
   setFilters: (filters: Partial<Character>) => void;
   setQuery: (query: string) => void;
+  setPage: (page: number) => void;
+  currentPage: number;
+  totalPages: number;
+  query: string;
 }) => {
   const { mutate: updateCharacter } = useOptimisticUpdateCharacter();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
@@ -39,6 +47,8 @@ export const CharacterList = ({
         setIsModalOpen: (value: boolean) => void;
         mode?: "view" | "edit";
         filters: Partial<Character>;
+        currentPage: number;
+        query: string;
       }
     | undefined
   >(undefined);
@@ -97,6 +107,8 @@ export const CharacterList = ({
       setIsModalOpen: () => setModalData(undefined),
       mode: "view",
       filters,
+      currentPage,
+      query,
     });
   };
 
@@ -107,6 +119,8 @@ export const CharacterList = ({
       setIsModalOpen: () => setModalData(undefined),
       mode: "edit",
       filters,
+      currentPage,
+      query,
     });
   };
 
@@ -114,6 +128,8 @@ export const CharacterList = ({
     updateCharacter({
       newCharacter: { ...character, favorite: true },
       filters,
+      page: currentPage,
+      query,
     });
     addFavorite(character.id.toString());
   };
@@ -124,13 +140,19 @@ export const CharacterList = ({
     updateCharacter({
       newCharacter: { ...character, favorite: false },
       filters,
+      page: currentPage,
+      query,
     });
 
     removeFavorite(character.id.toString());
 
     setTimeout(() => {
       queryClient.invalidateQueries({
-        queryKey: characterKeys.favoritesList({ filters }).queryKey,
+        queryKey: characterKeys.favoritesList({
+          filters,
+          query,
+          page: currentPage,
+        }).queryKey,
       });
     });
   };
@@ -160,13 +182,26 @@ export const CharacterList = ({
           includeSearch
           applyAllHandler={setFilters}
         />
-        <Flex justify={characters.length ? "start" : "center"}>
+        <Flex
+          justify={characters.length ? "start" : "center"}
+          className="w-full"
+        >
           <List
             className="character-list p-3"
             grid={calculateGridColumns()}
             loading={isLoading}
             itemLayout="horizontal"
             dataSource={characters}
+            pagination={{
+              position: "bottom",
+              align: "start",
+              onChange: (page) => {
+                setPage(page);
+              },
+              pageSize: 20,
+              total: totalPages * 20,
+              pageSizeOptions: [],
+            }}
             renderItem={(item) => (
               <List.Item>
                 {
