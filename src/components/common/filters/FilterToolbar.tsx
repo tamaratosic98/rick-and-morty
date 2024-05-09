@@ -1,15 +1,21 @@
 import { FilterOutlined } from "@ant-design/icons";
-import { Button, Drawer, Flex, FloatButton, Input } from "antd";
+import { Flex, FloatButton, Input } from "antd";
 import { useState } from "react";
 import { FilterToolbarProps } from "../../../utils/types";
+import { FilterDrawer } from "./FilterDrawer";
 import FilterItem from "./FilterItem";
 import "./filterToolbar.css";
 
 const { Search } = Input;
 
-const FilterToolbar = (props: FilterToolbarProps) => {
-  const { filters, includeSearch, onSearch, searchPlaceholder, searchLoading } =
-    props;
+const FilterToolbar = ({
+  filters,
+  includeSearch,
+  onSearch,
+  searchPlaceholder,
+  searchLoading,
+  applyAllHandler: applyAllFilters,
+}: FilterToolbarProps) => {
   const [open, setOpen] = useState(false);
 
   const onCloseDrawerHandler = () => {
@@ -43,26 +49,16 @@ const FilterToolbar = (props: FilterToolbarProps) => {
         shape="circle"
         onClick={openDrawerHandler}
       />
-      <Drawer title="Choose filters" onClose={onCloseDrawerHandler} open={open}>
-        <Flex align="center" className="p-2" gap="large" vertical wrap>
-          {includeSearch && (
-            <Search
-              placeholder={searchPlaceholder || "Search..."}
-              onSearch={onSearch}
-              allowClear
-              loading={searchLoading}
-              style={{ width: "100%" }}
-              size="large"
-            />
-          )}
-          {filters.map((filter) => (
-            <FilterItem filter={filter} isMobile key={filter.field} />
-          ))}
-          <Button block size="large">
-            Apply
-          </Button>
-        </Flex>
-      </Drawer>
+      <FilterDrawer
+        includeSearch={includeSearch}
+        onSearch={onSearch}
+        searchPlaceholder={searchPlaceholder}
+        searchLoading={searchLoading}
+        filters={filters}
+        open={open}
+        onCloseDrawer={onCloseDrawerHandler}
+        applyAllHandler={applyAllFilters}
+      />
     </>
   );
 };

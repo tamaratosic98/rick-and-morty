@@ -1,3 +1,5 @@
+import { Character } from "../models/character";
+
 type FilterType = "text" | "select";
 type FilterSelectOption = {
   label: string;
@@ -12,10 +14,17 @@ export type Filter = {
   onChange: (value: string) => void;
 };
 
-export type FilterToolbarProps = {
+export interface FilterToolbarProps {
   filters: Array<Filter>;
   includeSearch?: boolean;
-  onSearch?: () => void;
+  onSearch?: (query: string) => void;
   searchPlaceholder?: string;
   searchLoading?: boolean;
-};
+  applyAllHandler: (filters: Partial<Character>) => void;
+}
+
+export interface FilterDrawerProps extends FilterToolbarProps {
+  onCloseDrawer: () => void;
+  open: boolean;
+  applyAllHandler: (filters: Partial<Character>) => void;
+}

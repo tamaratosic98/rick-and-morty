@@ -152,7 +152,12 @@ export const CharacterList = ({
   return (
     <>
       <Flex vertical gap="large">
-        <FilterToolbar filters={filterItems} includeSearch />
+        <FilterToolbar
+          filters={filterItems}
+          // onSearch={(query) => setFilters({ name: query })}
+          includeSearch
+          applyAllHandler={setFilters}
+        />
         <Flex justify={characters.length ? "start" : "center"}>
           <List
             className="character-list p-3"

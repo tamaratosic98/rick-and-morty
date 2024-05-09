@@ -1,14 +1,17 @@
 import { useDebounce } from "@uidotdev/usehooks";
 import { Input, Select } from "antd";
 import { useEffect, useState } from "react";
+import { Character } from "../../../models/character";
 import { Filter } from "../../../utils/types";
 
 const FilterItem = ({
   filter,
   isMobile,
+  setFilters,
 }: {
   filter: Filter;
   isMobile?: boolean;
+  setFilters?: (filters: Partial<Character>) => void;
 }) => {
   const [value, setValue] = useState("");
   const debouncedValue = useDebounce(value, 500);
@@ -24,7 +27,22 @@ const FilterItem = ({
   }, [debouncedValue]);
 
   const handleChange = (event: any) => {
-    setValue(event.target.value);
+    switch (filter.type) {
+      case "select":
+        if (isMobile) {
+          setValue(event);
+          setFilters?.({ [filter.field]: event });
+        } else {
+          filter.onChange(event);
+        }
+        break;
+      default:
+        setValue(event.target?.value);
+        if (isMobile) {
+          setFilters?.({ [filter.field]: event.target?.value });
+        }
+        break;
+    }
   };
 
   const renderFilterItem = () => {
@@ -53,7 +71,7 @@ const FilterItem = ({
           <Select
             key={filter.field}
             placeholder={filter.placeholder || "Select..."}
-            onChange={filter.onChange}
+            onChange={handleChange}
             options={filter.options}
             style={
               isMobile
