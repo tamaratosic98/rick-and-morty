@@ -1,32 +1,33 @@
-import { Character } from "../models/character";
+import { Character } from "../modules/character/character.types";
 
 type FilterType = "text" | "select";
+
 type FilterSelectOption = {
   label: string;
   value: string;
 };
+
 export type Filter = {
   field: string;
   label: string;
   type: FilterType;
-  options?: Array<FilterSelectOption>;
-  placeholder?: string;
   onChange: (value: string) => void;
+  placeholder?: string;
+  options?: Array<FilterSelectOption>;
 };
 
 export interface FilterToolbarProps {
   filters: Array<Filter>;
-  includeSearch?: boolean;
   applyAllHandler: (filters: Partial<Character>) => void;
   onSearch: (query: string) => void;
-  searchPlaceholder?: string;
+  includeSearch?: boolean;
   searchLoading?: boolean;
+  searchPlaceholder?: string;
 }
 
 export interface FilterDrawerProps extends FilterToolbarProps {
-  onCloseDrawer: () => void;
   open: boolean;
-  applyAllHandler: (filters: Partial<Character>) => void;
+  onCloseDrawer: () => void;
 }
 
 export type GetResponse<T> = {
