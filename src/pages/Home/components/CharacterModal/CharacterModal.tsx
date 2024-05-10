@@ -1,5 +1,6 @@
 import Modal from "antd/es/modal/Modal";
 import { useMemo } from "react";
+import { CharacterFormMode } from "../../../../modules/character/character.constants";
 import { Character } from "../../../../modules/character/character.types";
 import { CharacterForm } from "../CharacterForm/CharacterForm";
 
@@ -7,7 +8,7 @@ export const CharacterModal = ({
   characterId,
   isModalOpen,
   setIsModalOpen,
-  mode = "view",
+  mode = CharacterFormMode.VIEW,
   filters,
   currentPage,
   query,
@@ -15,13 +16,13 @@ export const CharacterModal = ({
   isModalOpen: boolean;
   characterId: string;
   setIsModalOpen: (value: boolean) => void;
-  mode?: "view" | "edit";
+  mode?: CharacterFormMode;
   filters: Partial<Character>;
   currentPage: number;
   query: string;
 }) => {
   const title = useMemo(() => {
-    if (mode === "view") {
+    if (mode === CharacterFormMode.VIEW) {
       return "Character Info";
     } else {
       return "Edit Character";

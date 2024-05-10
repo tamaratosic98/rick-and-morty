@@ -9,6 +9,7 @@ import { Card, Flex, Image, List } from "antd";
 import Meta from "antd/es/card/Meta";
 import { useState } from "react";
 import FilterToolbar from "../../../../components/Filter/FilterToolbar";
+import { CharacterFormMode } from "../../../../modules/character/character.constants";
 import { useFavorites } from "../../../../modules/character/character.hooks";
 import { characterKeys } from "../../../../modules/character/character.keys";
 import { useOptimisticUpdateCharacter } from "../../../../modules/character/character.queries";
@@ -49,7 +50,7 @@ export const CharacterList = ({
         isModalOpen: boolean;
         characterId: string;
         setIsModalOpen: (value: boolean) => void;
-        mode?: "view" | "edit";
+        mode?: CharacterFormMode;
         filters: Partial<Character>;
         currentPage: number;
         query: string;
@@ -109,7 +110,7 @@ export const CharacterList = ({
       isModalOpen: true,
       characterId: character?.id?.toString(),
       setIsModalOpen: () => setModalData(undefined),
-      mode: "view",
+      mode: CharacterFormMode.VIEW,
       filters,
       currentPage,
       query,
@@ -121,7 +122,7 @@ export const CharacterList = ({
       isModalOpen: true,
       characterId: character?.id?.toString(),
       setIsModalOpen: () => setModalData(undefined),
-      mode: "edit",
+      mode: CharacterFormMode.EDIT,
       filters,
       currentPage,
       query,
@@ -216,11 +217,11 @@ export const CharacterList = ({
                     }
                     actions={[
                       <EyeOutlined
-                        key="view"
+                        key={CharacterFormMode.VIEW}
                         onClick={() => openViewModal(item)}
                       />,
                       <EditOutlined
-                        key="edit"
+                        key={CharacterFormMode.EDIT}
                         onClick={(event) => {
                           event.stopPropagation();
                           openEditModal(item);

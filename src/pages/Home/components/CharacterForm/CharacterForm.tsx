@@ -9,6 +9,7 @@ import {
   Spin,
 } from "antd";
 import { useMemo } from "react";
+import { CharacterFormMode } from "../../../../modules/character/character.constants";
 import {
   useCharacter,
   useOptimisticUpdateCharacter,
@@ -24,7 +25,7 @@ export const CharacterForm = ({
   query,
 }: {
   characterId: string;
-  mode: "view" | "edit";
+  mode: CharacterFormMode;
   onSubmit: () => void;
   filters: Partial<Character>;
   currentPage: number;
@@ -44,7 +45,7 @@ export const CharacterForm = ({
     onSubmit();
   };
 
-  const isDisabled = useMemo(() => mode === "view", [mode]);
+  const isDisabled = useMemo(() => mode === CharacterFormMode.VIEW, [mode]);
 
   return (
     <>
