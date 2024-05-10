@@ -26,21 +26,35 @@ const FilterItem = ({
     !isMobile && fn();
   }, [debouncedValue]);
 
-  const handleChange = (event: any) => {
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement> | string | undefined
+  ) => {
     switch (filter.type) {
       case "select":
+        const selectEvent = event === undefined ? "" : (event as string);
+
         if (isMobile) {
-          setValue(event);
+          setValue(selectEvent);
           setFilters?.({ [filter?.field]: event });
         } else {
-          filter.onChange(event);
+          filter.onChange(selectEvent);
         }
         break;
       default:
-        setValue(event.target?.value);
+        const targetValue =
+          event === undefined
+            ? ""
+            : (
+                (event as React.ChangeEvent<HTMLInputElement>)
+                  .target as HTMLInputElement
+              )?.value;
+
+        setValue(targetValue);
+
         if (isMobile) {
-          setFilters?.({ [filter?.field]: event.target?.value });
+          setFilters?.({ [filter?.field]: targetValue });
         }
+
         break;
     }
   };
@@ -79,6 +93,8 @@ const FilterItem = ({
                 : { width: "300px", minWidth: "200px" }
             }
             size="large"
+            allowClear
+            onClear={() => handleChange(undefined)}
           />
         );
       default:
