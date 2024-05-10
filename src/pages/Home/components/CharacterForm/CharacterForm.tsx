@@ -14,6 +14,7 @@ import {
   useCharacter,
   useOptimisticUpdateCharacter,
 } from "../../../../modules/character/character.queries";
+import { characterStore } from "../../../../modules/character/character.store";
 import { Character } from "../../../../modules/character/character.types";
 
 export const CharacterForm = ({
@@ -31,12 +32,32 @@ export const CharacterForm = ({
   currentPage: number;
   query: string;
 }) => {
-  const { data: character, isLoading } = useCharacter({ characterId });
   const { mutate: updateCharacter } = useOptimisticUpdateCharacter();
 
-  const onFinish: FormProps<Character>["onFinish"] = (values: Character) => {
+  const isCharactedModified = useMemo(
+    () => characterStore.modifiedCharacters.has(parseInt(characterId)),
+    [characterId]
+  );
+
+  const { data: character, isLoading } = useCharacter({
+    characterId,
+    isModified: isCharactedModified,
+  });
+
+  const onFinish: FormProps<
+    Character & { locationName: string }
+  >["onFinish"] = (values: Character & { locationName: string }) => {
+    const newLocation = {
+      name: values.locationName,
+      url: character?.location?.url ?? "",
+    };
+
     updateCharacter({
-      newCharacter: { ...(values ?? {}), id: parseInt(characterId) },
+      newCharacter: {
+        ...(values ?? {}),
+        id: parseInt(characterId),
+        location: newLocation,
+      },
       filters,
       page: currentPage,
       query,
@@ -107,7 +128,7 @@ export const CharacterForm = ({
             </Select>
           </Form.Item>
           <Form.Item
-            name="location"
+            name="locationName"
             label="Location Name"
             initialValue={character?.location?.name}
           >

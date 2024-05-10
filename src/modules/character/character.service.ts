@@ -1,9 +1,11 @@
+import to from "await-to-js";
 import axios from "axios";
 import { GetResponse } from "../../utils/types";
 import {
   CHARACTER_BASE_URL,
   SEARCHABLE_CHARACTER_FIELDS,
 } from "./character.constants";
+import { characterStore } from "./character.store";
 import { Character } from "./character.types";
 
 // #region | Helper Functions
@@ -31,6 +33,19 @@ export const queryAllCharacters = (
   });
 };
 
+const handleModifiedCharacters = (characters: Character[]) => {
+  return characters.map((character) => {
+    if (characterStore.isCharacterModified(character)) {
+      return {
+        ...character,
+        ...characterStore.getModifiedCharacter(character),
+      } as Character;
+    }
+
+    return character;
+  });
+};
+
 // #endregion
 
 const characterApi = axios.create({
@@ -50,7 +65,7 @@ export const CharacterService = {
     });
 
     return {
-      results: response.data?.results || [],
+      results: handleModifiedCharacters(response.data?.results) || [],
       total: response.data?.info?.count,
       pages: response.data?.info?.pages || 1,
     };
@@ -75,7 +90,7 @@ export const CharacterService = {
 
     return Array.isArray(response?.data)
       ? {
-          results: response?.data,
+          results: handleModifiedCharacters(response?.data),
           total: response?.data?.length || 0,
           pages: 1,
         }
@@ -87,7 +102,16 @@ export const CharacterService = {
   }: {
     characterId: string;
   }): Promise<Character> {
-    const response = await characterApi.get(`/character/${characterId}`);
-    return response?.data;
+    const [error, response] = await to(
+      characterApi.get(`/character/${characterId}`)
+    );
+    if (error) {
+      throw error;
+    }
+
+    return {
+      ...response?.data,
+      ...(characterStore.getModifiedCharacter(response?.data) ?? {}),
+    };
   },
 };

@@ -4,6 +4,7 @@ import { GetResponse } from "../../utils/types";
 import { useFavorites } from "./character.hooks";
 import { characterKeys } from "./character.keys";
 import { CharacterService, queryAllCharacters } from "./character.service";
+import { characterStore } from "./character.store";
 import { Character } from "./character.types";
 
 export function useCharacters({
@@ -67,9 +68,21 @@ export function useFavoriteCharacters({
   });
 }
 
-export function useCharacter({ characterId }: { characterId: string }) {
+export function useCharacter({
+  characterId,
+  isModified,
+}: {
+  characterId: string;
+  isModified: boolean;
+}) {
   return useQuery({
-    queryKey: ["character", { characterId }],
+    queryKey: [
+      "character",
+      {
+        characterId,
+        isModified,
+      },
+    ],
     queryFn: () => CharacterService.getCharacter({ characterId }),
   });
 }
@@ -104,6 +117,8 @@ export function useOptimisticUpdateCharacter() {
         : characterKeys.list({ filters, page, query })?.queryKey;
 
       await queryClient.cancelQueries({ queryKey: keys });
+
+      characterStore.setModifiedCharacters(newCharacter);
 
       const data = queryClient.getQueryData(keys) || [];
 
