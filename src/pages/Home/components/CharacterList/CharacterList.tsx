@@ -20,7 +20,7 @@ import {
 } from "../../../../modules/character/character.types";
 import { Filter } from "../../../../utils/types";
 import { CharacterModal } from "../CharacterModal/CharacterModal";
-
+import "./CharacterList.css";
 export const CharacterList = ({
   characters,
   isLoading,
@@ -205,7 +205,6 @@ export const CharacterList = ({
               },
               pageSize: 20,
               total: totalPages * 20,
-              pageSizeOptions: [],
             }}
             renderItem={(item) => (
               <List.Item>
