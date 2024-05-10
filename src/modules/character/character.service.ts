@@ -34,7 +34,7 @@ export const queryAllCharacters = (
 };
 
 const handleModifiedCharacters = (characters: Character[]) => {
-  return characters.map((character) => {
+  return characters?.map((character) => {
     if (characterStore.isCharacterModified(character)) {
       return {
         ...character,

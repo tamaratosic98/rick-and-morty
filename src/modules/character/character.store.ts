@@ -12,15 +12,15 @@ class CharacterStore {
   }
 
   setModifiedCharacters = (updatedCharacter: Character) => {
-    this.modifiedCharacters.set(updatedCharacter.id, updatedCharacter);
+    this.modifiedCharacters.set(updatedCharacter?.id, updatedCharacter);
   };
 
   isCharacterModified = (character: Character) => {
-    return this.modifiedCharacters.has(character.id);
+    return this.modifiedCharacters.has(character?.id);
   };
 
   getModifiedCharacter = (character: Character) => {
-    return this.modifiedCharacters.get(character.id);
+    return this.modifiedCharacters.get(character?.id);
   };
 }
 
