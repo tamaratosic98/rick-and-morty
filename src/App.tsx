@@ -16,7 +16,14 @@ const App = () => {
       />
 
       <Route path="/sign-in" element={<SignIn />} />
-      <Route path="/favorites" element={<Favorites />} />
+      <Route
+        path="/favorites"
+        element={
+          <RouteGuard>
+            <Favorites />
+          </RouteGuard>
+        }
+      />
     </Routes>
   );
 };
