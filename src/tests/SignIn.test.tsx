@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
-import SignIn from "../pages/SignIn";
+import SignIn from "../pages/SignIn/SignIn";
 
 function renderSignInPage() {
   return render(
