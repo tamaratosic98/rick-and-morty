@@ -52,15 +52,18 @@ export function useFavoriteCharacters({
       const [error, response] = await to(
         CharacterService.getFavoriteCharacters({
           ids: favorites,
-          filters,
-          page,
         })
       );
 
       if (!error) {
         const { results: characters, pages } = response;
 
-        return { results: queryAllCharacters(characters, query), pages };
+        characterStore.setFavorites(response.results);
+
+        return {
+          results: queryAllCharacters(characters, query, filters),
+          pages,
+        };
       }
 
       throw error;
