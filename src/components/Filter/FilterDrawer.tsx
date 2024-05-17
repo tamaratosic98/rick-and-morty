@@ -1,9 +1,9 @@
-import { Button, Drawer, Flex } from "antd";
-import Search from "antd/es/input/Search";
-import { useState } from "react";
-import { Character } from "../../modules/character/character.types";
-import { FilterDrawerProps } from "../../utils/types";
-import FilterItem from "./FilterItem";
+import { Button, Drawer, Flex } from 'antd';
+import Search from 'antd/es/input/Search';
+import { useState } from 'react';
+import { Character } from '../../modules/character/character.types';
+import { FilterDrawerProps } from '../../utils/types';
+import FilterItem from './FilterItem';
 
 export const FilterDrawer = ({
   filters,
@@ -16,7 +16,7 @@ export const FilterDrawer = ({
   applyAllHandler,
 }: FilterDrawerProps) => {
   const [appliedFilters, setAppliedFilters] = useState<Partial<Character>>({});
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
 
   const applyFiltersHandler = () => {
     applyAllHandler(appliedFilters);
@@ -33,22 +33,17 @@ export const FilterDrawer = ({
       <Flex align="center" className="p-2" gap="large" vertical wrap>
         {includeSearch && (
           <Search
-            placeholder={searchPlaceholder || "Search..."}
+            placeholder={searchPlaceholder || 'Search...'}
             onSearch={onSearch}
             allowClear
             loading={searchLoading}
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             size="large"
-            onChange={(event) => setSearch(event.target?.value)}
+            onChange={event => setSearch(event.target?.value)}
           />
         )}
-        {filters.map((filter) => (
-          <FilterItem
-            filter={filter}
-            key={filter?.field}
-            isMobile={true}
-            setFilters={handleSetAppliedFilters}
-          />
+        {filters.map(filter => (
+          <FilterItem filter={filter} key={filter?.field} isMobile={true} setFilters={handleSetAppliedFilters} />
         ))}
         <Button block size="large" onClick={applyFiltersHandler}>
           Apply

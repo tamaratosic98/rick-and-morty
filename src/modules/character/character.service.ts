@@ -1,45 +1,30 @@
-import to from "await-to-js";
-import axios from "axios";
-import { GetResponse } from "../../utils/types";
-import {
-  CHARACTER_BASE_URL,
-  SEARCHABLE_CHARACTER_FIELDS,
-} from "./character.constants";
-import { characterStore } from "./character.store";
-import { Character } from "./character.types";
+import to from 'await-to-js';
+import axios from 'axios';
+import { GetResponse } from '../../utils/types';
+import { CHARACTER_BASE_URL, SEARCHABLE_CHARACTER_FIELDS } from './character.constants';
+import { characterStore } from './character.store';
+import { Character } from './character.types';
 // #region | Helper Functions
 
-export const filterByField = (
-  filters: Partial<Character>,
-  character: Character
-) => {
+export const filterByField = (filters: Partial<Character>, character: Character) => {
   const keys = Object.keys(filters) as Array<keyof Character>;
 
-  return keys.every((key) => {
+  return keys.every(key => {
     const filterValue = filters[key]!.toString().toLowerCase();
 
     return character[key]?.toString()?.toLowerCase()?.includes(filterValue);
   });
 };
 
-export const queryAllCharacters = (
-  characters: Array<Character>,
-  query?: string,
-  filters?: Partial<Character>
-) => {
+export const queryAllCharacters = (characters: Array<Character>, query?: string, filters?: Partial<Character>) => {
   if (!query && (!filters || Object.keys(filters)?.length === 0)) {
     return characters;
   }
 
-  return characters.filter((character) => {
+  return characters.filter(character => {
     if (
       SEARCHABLE_CHARACTER_FIELDS.some(
-        (field) =>
-          query &&
-          character[field as keyof Character]
-            ?.toString()
-            ?.toLowerCase()
-            ?.includes(query.toLowerCase())
+        field => query && character[field as keyof Character]?.toString()?.toLowerCase()?.includes(query.toLowerCase())
       ) ||
       (filters && filterByField(filters, character))
     ) {
@@ -49,7 +34,7 @@ export const queryAllCharacters = (
 };
 
 const handleModifiedCharacters = (characters: Character[]) => {
-  return characters?.map((character) => {
+  return characters?.map(character => {
     if (characterStore.isCharacterModified(character)) {
       return {
         ...character,
@@ -75,7 +60,7 @@ export const CharacterService = {
     filters?: Partial<Character>;
     page?: number;
   }): Promise<GetResponse<Character[]>> {
-    const response = await characterApi.get("/character", {
+    const response = await characterApi.get('/character', {
       params: { ...filters, page },
     });
 
@@ -95,7 +80,7 @@ export const CharacterService = {
       return { results: [], total: 0, pages: 0 };
     }
 
-    const response = await characterApi.get(`/character/${ids?.join(",")}`);
+    const response = await characterApi.get(`/character/${ids?.join(',')}`);
 
     return Array.isArray(response?.data)
       ? {
@@ -106,14 +91,8 @@ export const CharacterService = {
       : { results: [response?.data], total: 1, pages: 1 };
   },
 
-  async getCharacter({
-    characterId,
-  }: {
-    characterId: string;
-  }): Promise<Character> {
-    const [error, response] = await to(
-      characterApi.get(`/character/${characterId}`)
-    );
+  async getCharacter({ characterId }: { characterId: string }): Promise<Character> {
+    const [error, response] = await to(characterApi.get(`/character/${characterId}`));
     if (error) {
       throw error;
     }

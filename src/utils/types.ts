@@ -1,6 +1,6 @@
-import { Character } from "../modules/character/character.types";
+import { Character } from '../modules/character/character.types';
 
-type FilterType = "text" | "select";
+type FilterType = 'text' | 'select';
 
 type FilterSelectOption = {
   label: string;

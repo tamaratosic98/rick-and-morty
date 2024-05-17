@@ -1,10 +1,10 @@
-import { FilterOutlined } from "@ant-design/icons";
-import { Flex, FloatButton, Input } from "antd";
-import { useState } from "react";
-import { FilterToolbarProps } from "../../utils/types";
-import { FilterDrawer } from "./FilterDrawer";
-import FilterItem from "./FilterItem";
-import "./filterToolbar.css";
+import { FilterOutlined } from '@ant-design/icons';
+import { Flex, FloatButton, Input } from 'antd';
+import { useState } from 'react';
+import { FilterToolbarProps } from '../../utils/types';
+import { FilterDrawer } from './FilterDrawer';
+import FilterItem from './FilterItem';
+import './filterToolbar.css';
 
 const { Search } = Input;
 
@@ -31,15 +31,15 @@ const FilterToolbar = ({
       <Flex align="center" className="filter-toolbar p-2" gap="large" wrap>
         {includeSearch && (
           <Search
-            placeholder={searchPlaceholder || "Search..."}
+            placeholder={searchPlaceholder || 'Search...'}
             onSearch={onSearch}
             loading={searchLoading}
-            style={{ maxWidth: "300px", minWidth: "150px" }}
+            style={{ maxWidth: '300px', minWidth: '150px' }}
             size="large"
             allowClear
           />
         )}
-        {filters.map((filter) => (
+        {filters.map(filter => (
           <FilterItem filter={filter} key={filter?.field} />
         ))}
       </Flex>

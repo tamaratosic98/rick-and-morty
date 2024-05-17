@@ -1,6 +1,6 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable } from 'mobx';
 
-import { Character } from "./character.types";
+import { Character } from './character.types';
 
 class CharacterStore {
   favorites: Array<Character> = [];
@@ -27,9 +27,7 @@ class CharacterStore {
   };
 
   isFavorite = (id: number) => {
-    return (
-      this.favorites?.length && this.favorites?.some((char) => char.id === id)
-    );
+    return this.favorites?.length && this.favorites?.some(char => char.id === id);
   };
 }
 

@@ -1,22 +1,11 @@
-import { CloseOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Checkbox,
-  Flex,
-  Form,
-  FormProps,
-  Input,
-  Typography,
-} from "antd";
-import { addMinutes } from "date-fns";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  AUTH_COOKIE_DURATION,
-  DUMMY_USERS,
-} from "../../../../modules/auth/auth.constants";
-import { useAuthCookie } from "../../../../modules/auth/auth.hooks";
-import { User } from "../../../../modules/auth/auth.types";
+import { CloseOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Checkbox, Flex, Form, FormProps, Input, Typography } from 'antd';
+import { addMinutes } from 'date-fns';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AUTH_COOKIE_DURATION, DUMMY_USERS } from '../../../../modules/auth/auth.constants';
+import { useAuthCookie } from '../../../../modules/auth/auth.hooks';
+import { User } from '../../../../modules/auth/auth.types';
 
 export const SignInForm = () => {
   const navigate = useNavigate();
@@ -24,16 +13,14 @@ export const SignInForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { setCookie } = useAuthCookie();
 
-  const onFinish: FormProps<User>["onFinish"] = ({ username, password }) => {
+  const onFinish: FormProps<User>['onFinish'] = ({ username, password }) => {
     if (!username || !password) {
       return;
     }
 
     setIsLoading(true);
 
-    const user = DUMMY_USERS.find(
-      (u) => u.password === password && u.username === username
-    );
+    const user = DUMMY_USERS.find(u => u.password === password && u.username === username);
 
     if (user) {
       setErrorMessage(null);
@@ -46,10 +33,10 @@ export const SignInForm = () => {
       });
 
       setTimeout(() => {
-        navigate({ pathname: "/" });
+        navigate({ pathname: '/' });
       });
     } else {
-      setErrorMessage("Incorect username or password");
+      setErrorMessage('Incorect username or password');
     }
 
     setIsLoading(false);
@@ -58,11 +45,7 @@ export const SignInForm = () => {
   return (
     <>
       {errorMessage && (
-        <Flex
-          className="bg-red-100 w-full py-3 rounded-md"
-          justify="space-around"
-          align="center"
-        >
+        <Flex className="bg-red-100 w-full py-3 rounded-md" justify="space-around" align="center">
           <Typography.Text type="danger" className="text-sm">
             {errorMessage}
           </Typography.Text>
@@ -82,10 +65,7 @@ export const SignInForm = () => {
         autoComplete="off"
         size="large"
       >
-        <Form.Item<User>
-          name="username"
-          rules={[{ required: true, message: "Please input your username!" }]}
-        >
+        <Form.Item<User> name="username" rules={[{ required: true, message: 'Please input your username!' }]}>
           <Input
             prefix={<UserOutlined className="text-gray-400" />}
             placeholder="Username"
@@ -93,10 +73,7 @@ export const SignInForm = () => {
           />
         </Form.Item>
 
-        <Form.Item<User>
-          name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
-        >
+        <Form.Item<User> name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
           <Input
             prefix={<LockOutlined className="text-gray-400" />}
             type="password"
@@ -106,22 +83,11 @@ export const SignInForm = () => {
         </Form.Item>
 
         {/*TODO: Handle remember me feature*/}
-        <Form.Item
-          name="remember"
-          valuePropName="checked"
-          wrapperCol={{ offset: 8, span: 16 }}
-        >
+        <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
           <Checkbox>Remember me</Checkbox>
         </Form.Item>
         <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            size="large"
-            loading={isLoading}
-            block
-            data-testid="submit-button"
-          >
+          <Button type="primary" htmlType="submit" size="large" loading={isLoading} block data-testid="submit-button">
             Submit
           </Button>
         </Form.Item>

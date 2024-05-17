@@ -1,5 +1,5 @@
-import { addDays } from "date-fns";
-import { useCallback, useState } from "react";
+import { addDays } from 'date-fns';
+import { useCallback, useState } from 'react';
 
 // #region | Helper functions & Types
 
@@ -15,29 +15,29 @@ export type CookieSettings = {
   options?: CookieOptions;
 };
 
-const IS_BROSWER = typeof window !== "undefined";
+const IS_BROSWER = typeof window !== 'undefined';
 
 const setCookie = ({ key, value, options }: CookieSettings) => {
   if (!IS_BROSWER) return;
 
   const optionsWithDefaults = {
-    path: "/",
+    path: '/',
     expires: addDays(Date.now(), 7),
     ...options,
   };
 
-  document.cookie = `${key}=${encodeURIComponent(value || "")}; expires=${
+  document.cookie = `${key}=${encodeURIComponent(value || '')}; expires=${
     optionsWithDefaults.expires
   }; path=${optionsWithDefaults.path}`;
 };
 
-const getCookie = ({ key, initialValue = "" }: CookieSettings) => {
+const getCookie = ({ key, initialValue = '' }: CookieSettings) => {
   return (
     (IS_BROSWER &&
-      document.cookie.split("; ").reduce((r, v) => {
-        const parts = v.split("=");
+      document.cookie.split('; ').reduce((r, v) => {
+        const parts = v.split('=');
         return parts[0] === key ? decodeURIComponent(parts[1]) : r;
-      }, "")) ||
+      }, '')) ||
     initialValue
   );
 };

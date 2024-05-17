@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useFavoriteCharacters } from "../../../../modules/character/character.queries";
-import { Character } from "../../../../modules/character/character.types";
-import { CharacterList } from "../../../Home/components/CharacterList/CharacterList";
+import { useState } from 'react';
+import { useFavoriteCharacters } from '../../../../modules/character/character.queries';
+import { Character } from '../../../../modules/character/character.types';
+import { CharacterList } from '../../../Home/components/CharacterList/CharacterList';
 
 export const FavoriteCharactersContainer = () => {
   const [filters, setFilters] = useState({});
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
 
   const { data, isLoading } = useFavoriteCharacters({
