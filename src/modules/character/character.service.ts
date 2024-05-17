@@ -7,26 +7,41 @@ import {
 } from "./character.constants";
 import { characterStore } from "./character.store";
 import { Character } from "./character.types";
-
 // #region | Helper Functions
+
+export const filterByField = (
+  filters: Partial<Character>,
+  character: Character
+) => {
+  const keys = Object.keys(filters) as Array<keyof Character>;
+
+  return keys.every((key) => {
+    const filterValue = filters[key]!.toString().toLowerCase();
+
+    return character[key]?.toString()?.toLowerCase()?.includes(filterValue);
+  });
+};
 
 export const queryAllCharacters = (
   characters: Array<Character>,
-
-  query?: string
+  query?: string,
+  filters?: Partial<Character>
 ) => {
-  if (!query) {
+  if (!query && (!filters || Object.keys(filters)?.length === 0)) {
     return characters;
   }
 
   return characters.filter((character) => {
     if (
-      SEARCHABLE_CHARACTER_FIELDS.some((field) =>
-        character[field as keyof Character]
-          ?.toString()
-          ?.toLowerCase()
-          ?.includes(query.toLowerCase())
-      )
+      SEARCHABLE_CHARACTER_FIELDS.some(
+        (field) =>
+          query &&
+          character[field as keyof Character]
+            ?.toString()
+            ?.toLowerCase()
+            ?.includes(query.toLowerCase())
+      ) ||
+      (filters && filterByField(filters, character))
     ) {
       return character;
     }
@@ -73,20 +88,14 @@ export const CharacterService = {
 
   async getFavoriteCharacters({
     ids,
-    filters,
-    page,
   }: {
     ids?: string[];
-    filters?: Partial<Character>;
-    page?: number;
   } = {}): Promise<GetResponse<Character[]>> {
     if (!ids?.length) {
       return { results: [], total: 0, pages: 0 };
     }
 
-    const response = await characterApi.get(`/character/${ids?.join(",")}`, {
-      params: { ...filters, page },
-    });
+    const response = await characterApi.get(`/character/${ids?.join(",")}`);
 
     return Array.isArray(response?.data)
       ? {
