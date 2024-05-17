@@ -2,11 +2,18 @@ import { useState } from 'react';
 import { useFavoriteCharacters } from '../../../../modules/character/character.queries';
 import { Character } from '../../../../modules/character/character.types';
 import { CharacterList } from '../../../Home/components/CharacterList/CharacterList';
+import { characterStore } from '../../../../modules/character/character.store';
+import { PAGINATION_INITIAL_STATE } from '../../../../modules/character/character.constants';
 
 export const FavoriteCharactersContainer = () => {
   const [filters, setFilters] = useState({});
   const [query, setQuery] = useState('');
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(PAGINATION_INITIAL_STATE);
+
+  const setPageHandler = (value: number) => {
+    setPage(value);
+    characterStore.setPagination(value);
+  };
 
   const { data, isLoading } = useFavoriteCharacters({
     filters,
@@ -25,9 +32,9 @@ export const FavoriteCharactersContainer = () => {
       filters={filters}
       setFilters={setFiltersHandler}
       setQuery={setQuery}
-      setPage={setPage}
-      totalPages={data?.pages || 1}
-      currentPage={page}
+      setPage={setPageHandler}
+      totalPages={characterStore.totalPages}
+      currentPage={characterStore.pagination}
       query={query}
     />
   );

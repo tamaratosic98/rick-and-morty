@@ -3,7 +3,7 @@ import to from 'await-to-js';
 import { GetResponse } from '../../utils/types';
 import { useFavorites } from './character.hooks';
 import { characterKeys } from './character.keys';
-import { CharacterService, queryAllCharacters } from './character.service';
+import { CharacterService, applyPagination, queryAllCharacters } from './character.service';
 import { characterStore } from './character.store';
 import { Character } from './character.types';
 
@@ -59,7 +59,7 @@ export function useFavoriteCharacters({
         characterStore.setFavorites(response.results);
 
         return {
-          results: queryAllCharacters(characters, query, filters),
+          results: applyPagination(queryAllCharacters(characters, query, filters), page ?? 1),
           pages,
         };
       }

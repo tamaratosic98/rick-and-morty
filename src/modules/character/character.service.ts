@@ -1,7 +1,7 @@
 import to from 'await-to-js';
 import axios from 'axios';
 import { GetResponse } from '../../utils/types';
-import { CHARACTER_BASE_URL, SEARCHABLE_CHARACTER_FIELDS } from './character.constants';
+import { CHARACTER_BASE_URL, MAX_CHARACTERS_PER_PAGE, SEARCHABLE_CHARACTER_FIELDS } from './character.constants';
 import { characterStore } from './character.store';
 import { Character } from './character.types';
 // #region | Helper Functions
@@ -31,6 +31,10 @@ export const queryAllCharacters = (characters: Array<Character>, query?: string,
       return character;
     }
   });
+};
+
+export const applyPagination = (characters: Array<Character>, page: number) => {
+  return characters.slice((page - 1) * MAX_CHARACTERS_PER_PAGE, page * MAX_CHARACTERS_PER_PAGE);
 };
 
 const handleModifiedCharacters = (characters: Character[]) => {

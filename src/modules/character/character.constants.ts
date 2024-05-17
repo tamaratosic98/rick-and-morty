@@ -8,3 +8,7 @@ export enum CharacterFormMode {
   VIEW = 'view',
   EDIT = 'edit',
 }
+
+export const PAGINATION_INITIAL_STATE = 1;
+
+export const MAX_CHARACTERS_PER_PAGE = 20;

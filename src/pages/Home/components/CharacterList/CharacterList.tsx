@@ -4,7 +4,7 @@ import { Card, Flex, Image, List } from 'antd';
 import Meta from 'antd/es/card/Meta';
 import { useState } from 'react';
 import FilterToolbar from '../../../../components/Filter/FilterToolbar';
-import { CharacterFormMode } from '../../../../modules/character/character.constants';
+import { CharacterFormMode, MAX_CHARACTERS_PER_PAGE } from '../../../../modules/character/character.constants';
 import { useFavorites } from '../../../../modules/character/character.hooks';
 import { characterKeys } from '../../../../modules/character/character.keys';
 import { useOptimisticUpdateCharacter } from '../../../../modules/character/character.queries';
@@ -186,8 +186,8 @@ export const CharacterList = ({
               onChange: page => {
                 setPage(page);
               },
-              pageSize: 20,
-              total: totalPages * 20,
+              pageSize: MAX_CHARACTERS_PER_PAGE,
+              total: totalPages * MAX_CHARACTERS_PER_PAGE,
             }}
             renderItem={item => (
               <List.Item>
