@@ -90,9 +90,13 @@ export const CharacterService = {
       ? {
           results: handleModifiedCharacters(response?.data),
           total: response?.data?.length || 0,
-          pages: 1,
+          pages: Math.ceil(response?.data?.length ? response?.data?.length / MAX_CHARACTERS_PER_PAGE : 1),
         }
-      : { results: [response?.data], total: 1, pages: 1 };
+      : {
+          results: [response?.data],
+          total: response?.data?.length ?? 1,
+          pages: Math.ceil(response?.data?.length ? response?.data?.length / MAX_CHARACTERS_PER_PAGE : 1),
+        };
   },
 
   async getCharacter({ characterId }: { characterId: string }): Promise<Character> {

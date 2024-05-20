@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
 import { Character } from './character.types';
-import { PAGINATION_INITIAL_STATE } from './character.constants';
+import { MAX_CHARACTERS_PER_PAGE, PAGINATION_INITIAL_STATE } from './character.constants';
 
 class CharacterStore {
   favorites: Array<Character> = [];
@@ -18,7 +18,7 @@ class CharacterStore {
   };
 
   setFavorites = (favorites: Array<Character>) => {
-    this.totalPages = Math.ceil(favorites.length / 20);
+    this.totalPages = Math.ceil(favorites.length / MAX_CHARACTERS_PER_PAGE);
     this.favorites = favorites;
   };
 

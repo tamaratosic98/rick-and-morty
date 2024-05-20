@@ -30,7 +30,7 @@ export const CharacterList = ({
   setQuery: (query: string) => void;
   setPage: (page: number) => void;
   currentPage: number;
-  totalPages: number;
+  totalPages?: number;
   query: string;
 }) => {
   const { mutate: updateCharacter } = useOptimisticUpdateCharacter();
@@ -187,7 +187,7 @@ export const CharacterList = ({
                 setPage(page);
               },
               pageSize: MAX_CHARACTERS_PER_PAGE,
-              total: totalPages * MAX_CHARACTERS_PER_PAGE,
+              total: totalPages ? totalPages * MAX_CHARACTERS_PER_PAGE : undefined,
             }}
             renderItem={item => (
               <List.Item>

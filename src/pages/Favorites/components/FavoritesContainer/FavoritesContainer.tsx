@@ -22,6 +22,7 @@ export const FavoriteCharactersContainer = () => {
   });
 
   const setFiltersHandler = (filter: Partial<Character>) => {
+    setPageHandler(PAGINATION_INITIAL_STATE);
     setFilters({ ...(filters ?? {}), ...filter });
   };
 
@@ -33,8 +34,8 @@ export const FavoriteCharactersContainer = () => {
       setFilters={setFiltersHandler}
       setQuery={setQuery}
       setPage={setPageHandler}
-      totalPages={characterStore.totalPages}
-      currentPage={characterStore.pagination}
+      totalPages={data?.pages}
+      currentPage={page}
       query={query}
     />
   );
