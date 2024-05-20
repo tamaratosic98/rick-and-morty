@@ -1,26 +1,17 @@
-import {
-  EditOutlined,
-  EyeOutlined,
-  HeartFilled,
-  HeartOutlined,
-} from "@ant-design/icons";
-import { useQueryClient } from "@tanstack/react-query";
-import { Card, Flex, Image, List } from "antd";
-import Meta from "antd/es/card/Meta";
-import { useState } from "react";
-import FilterToolbar from "../../../../components/Filter/FilterToolbar";
-import { CharacterFormMode } from "../../../../modules/character/character.constants";
-import { useFavorites } from "../../../../modules/character/character.hooks";
-import { characterKeys } from "../../../../modules/character/character.keys";
-import { useOptimisticUpdateCharacter } from "../../../../modules/character/character.queries";
-import {
-  Character,
-  Gender,
-  Status,
-} from "../../../../modules/character/character.types";
-import { Filter } from "../../../../utils/types";
-import { CharacterModal } from "../CharacterModal/CharacterModal";
-import "./CharacterList.css";
+import { EditOutlined, EyeOutlined, HeartFilled, HeartOutlined } from '@ant-design/icons';
+import { useQueryClient } from '@tanstack/react-query';
+import { Card, Flex, Image, List } from 'antd';
+import Meta from 'antd/es/card/Meta';
+import { useState } from 'react';
+import FilterToolbar from '../../../../components/Filter/FilterToolbar';
+import { CharacterFormMode, MAX_CHARACTERS_PER_PAGE } from '../../../../modules/character/character.constants';
+import { useFavorites } from '../../../../modules/character/character.hooks';
+import { characterKeys } from '../../../../modules/character/character.keys';
+import { useOptimisticUpdateCharacter } from '../../../../modules/character/character.queries';
+import { Character, Gender, Status } from '../../../../modules/character/character.types';
+import { Filter } from '../../../../utils/types';
+import { CharacterModal } from '../CharacterModal/CharacterModal';
+import './CharacterList.css';
 export const CharacterList = ({
   characters,
   isLoading,
@@ -39,7 +30,7 @@ export const CharacterList = ({
   setQuery: (query: string) => void;
   setPage: (page: number) => void;
   currentPage: number;
-  totalPages: number;
+  totalPages?: number;
   query: string;
 }) => {
   const { mutate: updateCharacter } = useOptimisticUpdateCharacter();
@@ -60,48 +51,48 @@ export const CharacterList = ({
 
   const filterItems: Filter[] = [
     {
-      field: "name",
-      label: "Name",
-      type: "text",
-      placeholder: "Enter name...",
-      onChange: (value) => setFilters?.({ name: value }),
+      field: 'name',
+      label: 'Name',
+      type: 'text',
+      placeholder: 'Enter name...',
+      onChange: value => setFilters?.({ name: value }),
     },
     {
-      field: "species",
-      label: "Species",
-      type: "select",
-      placeholder: "Select species...",
+      field: 'species',
+      label: 'Species',
+      type: 'select',
+      placeholder: 'Select species...',
       options: [
-        { label: "Human", value: "human" },
-        { label: "Alien", value: "alien" },
-        { label: "unknown", value: "unknown" },
+        { label: 'Human', value: 'human' },
+        { label: 'Alien', value: 'alien' },
+        { label: 'unknown', value: 'unknown' },
       ],
-      onChange: (value) => setFilters?.({ species: value }),
+      onChange: value => setFilters?.({ species: value }),
     },
     {
-      field: "status",
-      label: "Status",
-      type: "select",
-      placeholder: "Select status...",
+      field: 'status',
+      label: 'Status',
+      type: 'select',
+      placeholder: 'Select status...',
       options: [
-        { label: "Alive", value: "alive" },
-        { label: "Dead", value: "dead" },
-        { label: "unknown", value: "unknown" },
+        { label: 'Alive', value: 'alive' },
+        { label: 'Dead', value: 'dead' },
+        { label: 'unknown', value: 'unknown' },
       ],
-      onChange: (value) => setFilters?.({ status: value as Status }),
+      onChange: value => setFilters?.({ status: value as Status }),
     },
     {
-      field: "gender",
-      label: "Gender",
-      type: "select",
-      placeholder: "Select gender...",
+      field: 'gender',
+      label: 'Gender',
+      type: 'select',
+      placeholder: 'Select gender...',
       options: [
-        { label: "Female", value: "female" },
-        { label: "Male", value: "male" },
-        { label: "Genderless", value: "genderless" },
-        { label: "unknown", value: "unknown" },
+        { label: 'Female', value: 'female' },
+        { label: 'Male', value: 'male' },
+        { label: 'Genderless', value: 'genderless' },
+        { label: 'unknown', value: 'unknown' },
       ],
-      onChange: (value) => setFilters?.({ gender: value as Gender }),
+      onChange: value => setFilters?.({ gender: value as Gender }),
     },
   ];
 
@@ -181,16 +172,8 @@ export const CharacterList = ({
   return (
     <>
       <Flex vertical gap="large">
-        <FilterToolbar
-          filters={filterItems}
-          onSearch={setQuery}
-          includeSearch
-          applyAllHandler={setFilters}
-        />
-        <Flex
-          justify={characters.length ? "start" : "center"}
-          className="w-full"
-        >
+        <FilterToolbar filters={filterItems} onSearch={setQuery} includeSearch applyAllHandler={setFilters} />
+        <Flex justify={characters.length ? 'start' : 'center'} className="w-full">
           <List
             className="character-list p-3"
             grid={calculateGridColumns()}
@@ -198,30 +181,25 @@ export const CharacterList = ({
             itemLayout="horizontal"
             dataSource={characters}
             pagination={{
-              position: "bottom",
-              align: "start",
-              onChange: (page) => {
+              position: 'bottom',
+              align: 'start',
+              onChange: page => {
                 setPage(page);
               },
-              pageSize: 20,
-              total: totalPages * 20,
+              pageSize: MAX_CHARACTERS_PER_PAGE,
+              total: totalPages ? totalPages * MAX_CHARACTERS_PER_PAGE : undefined,
             }}
-            renderItem={(item) => (
+            renderItem={item => (
               <List.Item>
                 {
                   <Card
                     onClick={() => openViewModal(item)}
-                    cover={
-                      <Image preview={false} alt={item.name} src={item.image} />
-                    }
+                    cover={<Image preview={false} alt={item.name} src={item.image} />}
                     actions={[
-                      <EyeOutlined
-                        key={CharacterFormMode.VIEW}
-                        onClick={() => openViewModal(item)}
-                      />,
+                      <EyeOutlined key={CharacterFormMode.VIEW} onClick={() => openViewModal(item)} />,
                       <EditOutlined
                         key={CharacterFormMode.EDIT}
-                        onClick={(event) => {
+                        onClick={event => {
                           event.stopPropagation();
                           openEditModal(item);
                         }}
@@ -229,7 +207,7 @@ export const CharacterList = ({
                       item.favorite || isFavorite(item.id.toString()) ? (
                         <HeartFilled
                           key="remove-from-favorites"
-                          onClick={(event) => {
+                          onClick={event => {
                             event.stopPropagation();
                             removeFromFavorites(item);
                           }}
@@ -237,7 +215,7 @@ export const CharacterList = ({
                       ) : (
                         <HeartOutlined
                           key="add-to-favorites"
-                          onClick={(event) => {
+                          onClick={event => {
                             event.stopPropagation();
                             addToFavorites(item);
                           }}

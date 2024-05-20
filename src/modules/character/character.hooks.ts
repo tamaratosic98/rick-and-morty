@@ -1,11 +1,8 @@
-import { useLocalStorage } from "@uidotdev/usehooks";
-import { FAVORITE_CHARACTERS_IDS } from "./character.constants";
+import { useLocalStorage } from '@uidotdev/usehooks';
+import { FAVORITE_CHARACTERS_IDS } from './character.constants';
 
 export function useFavorites() {
-  const [favorites, setFavorites] = useLocalStorage<Array<string>>(
-    FAVORITE_CHARACTERS_IDS,
-    []
-  );
+  const [favorites, setFavorites] = useLocalStorage<Array<string>>(FAVORITE_CHARACTERS_IDS, []);
 
   function addFavorite(id: string) {
     if (isFavorite(id)) {
@@ -16,7 +13,7 @@ export function useFavorites() {
   }
 
   function removeFavorite(id: string) {
-    setFavorites(favorites?.filter((favorite) => favorite !== id));
+    setFavorites(favorites?.filter(favorite => favorite !== id));
   }
 
   function isFavorite(id: string) {

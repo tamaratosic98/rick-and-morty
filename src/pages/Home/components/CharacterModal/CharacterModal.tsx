@@ -1,8 +1,8 @@
-import Modal from "antd/es/modal/Modal";
-import { useMemo } from "react";
-import { CharacterFormMode } from "../../../../modules/character/character.constants";
-import { Character } from "../../../../modules/character/character.types";
-import { CharacterForm } from "../CharacterForm/CharacterForm";
+import Modal from 'antd/es/modal/Modal';
+import { useMemo } from 'react';
+import { CharacterFormMode } from '../../../../modules/character/character.constants';
+import { Character } from '../../../../modules/character/character.types';
+import { CharacterForm } from '../CharacterForm/CharacterForm';
 
 export const CharacterModal = ({
   characterId,
@@ -23,10 +23,9 @@ export const CharacterModal = ({
 }) => {
   const title = useMemo(() => {
     if (mode === CharacterFormMode.VIEW) {
-      return "Character Info";
-    } else {
-      return "Edit Character";
+      return 'Character Info';
     }
+    return 'Edit Character';
   }, [mode]);
 
   return (

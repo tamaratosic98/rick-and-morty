@@ -1,11 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import to from "await-to-js";
-import { GetResponse } from "../../utils/types";
-import { useFavorites } from "./character.hooks";
-import { characterKeys } from "./character.keys";
-import { CharacterService, queryAllCharacters } from "./character.service";
-import { characterStore } from "./character.store";
-import { Character } from "./character.types";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import to from 'await-to-js';
+import { GetResponse } from '../../utils/types';
+import { useFavorites } from './character.hooks';
+import { characterKeys } from './character.keys';
+import { CharacterService, applyPagination, queryAllCharacters } from './character.service';
+import { characterStore } from './character.store';
+import { Character } from './character.types';
 
 export function useCharacters({
   filters,
@@ -19,9 +19,7 @@ export function useCharacters({
   return useQuery({
     ...characterKeys.list({ filters, query, page }),
     queryFn: async () => {
-      const [error, response] = await to(
-        CharacterService.getCharacters({ filters, page })
-      );
+      const [error, response] = await to(CharacterService.getCharacters({ filters, page }));
 
       if (!error) {
         const { results: characters, pages } = response;
@@ -61,7 +59,7 @@ export function useFavoriteCharacters({
         characterStore.setFavorites(response.results);
 
         return {
-          results: queryAllCharacters(characters, query, filters),
+          results: applyPagination(queryAllCharacters(characters, query, filters), page ?? 1),
           pages,
         };
       }
@@ -71,16 +69,10 @@ export function useFavoriteCharacters({
   });
 }
 
-export function useCharacter({
-  characterId,
-  isModified,
-}: {
-  characterId: string;
-  isModified: boolean;
-}) {
+export function useCharacter({ characterId, isModified }: { characterId: string; isModified: boolean }) {
   return useQuery({
     queryKey: [
-      "character",
+      'character',
       {
         characterId,
         isModified,
@@ -94,12 +86,6 @@ export function useOptimisticUpdateCharacter() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({}: {
-      newCharacter: Character;
-      filters: Partial<Character>;
-      page: number;
-      query: string;
-    }) => {},
     onMutate: async ({
       newCharacter,
       filters,
@@ -115,7 +101,7 @@ export function useOptimisticUpdateCharacter() {
         return;
       }
 
-      const keys = window.location?.href?.includes("favorites")
+      const keys = window.location?.href?.includes('favorites')
         ? characterKeys.favoritesList({ filters, page, query })?.queryKey
         : characterKeys.list({ filters, page, query })?.queryKey;
 
@@ -125,19 +111,17 @@ export function useOptimisticUpdateCharacter() {
 
       const data = queryClient.getQueryData(keys) || [];
 
-      queryClient.setQueryData(keys, (_old: Character[]) => {
+      queryClient.setQueryData(keys, () => {
         return {
-          results: (data as GetResponse<Character[]>).results.map(
-            (character: Character) => {
-              if (character.id === newCharacter.id) {
-                return {
-                  ...character,
-                  ...newCharacter,
-                };
-              }
-              return character;
+          results: (data as GetResponse<Character[]>).results.map((character: Character) => {
+            if (character.id === newCharacter.id) {
+              return {
+                ...character,
+                ...newCharacter,
+              };
             }
-          ),
+            return character;
+          }),
           pages: (data as GetResponse<Character[]>).pages,
         };
       });
@@ -145,7 +129,7 @@ export function useOptimisticUpdateCharacter() {
       return { previousCharacters: (data as GetResponse<Character[]>).results };
     },
     onError: (_err, _newCharacter, context) => {
-      queryClient.setQueryData(["characters"], context?.previousCharacters);
+      queryClient.setQueryData(['characters'], context?.previousCharacters);
     },
   });
 }

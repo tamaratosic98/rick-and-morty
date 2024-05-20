@@ -1,6 +1,6 @@
-export type Status = "Dead" | "Alive" | "unknown";
+export type Status = 'Dead' | 'Alive' | 'unknown';
 
-export type Gender = "Female" | "Male" | "Genderless" | "unknown";
+export type Gender = 'Female' | 'Male' | 'Genderless' | 'unknown';
 
 export type Origin = {
   name: string;
